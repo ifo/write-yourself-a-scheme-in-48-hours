@@ -10,7 +10,7 @@ main =
   \args -> putStrLn (readExpr (args !! 0))
 
 symbol :: Parser Char
-symbol = oneOf "!$%&|*+-/:<=?>@^_~#"
+symbol = oneOf "!$%&|*+-/:<=?>@^_~"
 
 readExpr :: String -> String
 readExpr input = case parse parseExpr "lisp" input of
@@ -54,18 +54,14 @@ parseAtom = do
   first <- letter <|> symbol
   rest <- many (letter <|> digit <|> symbol)
   let atom = [first] ++ rest
-  return $ case atom of
-              "#t" -> Bool True
-              "#f" -> Bool False
-              _    -> Atom atom
+  return $ Atom atom
+
+parseBoolean :: Parser LispVal
+parseBoolean = do
+  char '#'
+  (char 't' >> return (Bool True)) <|> (char 'f' >> return (Bool False))
 
 parseNumber :: Parser LispVal
---parseNumber = liftM (Number . read) $ many1 digit
-{-
-parseNumber = do
-  x <- many1 digit
-  return $ (Number . read) x
--}
 parseNumber =
   many1 digit >>=
   return . Number . read
@@ -74,3 +70,4 @@ parseExpr :: Parser LispVal
 parseExpr = parseAtom
             <|> parseString
             <|> parseNumber
+            <|> parseBoolean
