@@ -16,8 +16,8 @@ build-type:          Simple
 -- extra-source-files:  
 cabal-version:       >=1.10
 
-executable write-yourself-a-scheme-in-48-hours
-  main-is:             hello.hs
+executable simple_parser
+  main-is:             datatypeparser.hs
   -- other-modules:       
   -- other-extensions:    
   build-depends:       base >=4.7 && <4.8

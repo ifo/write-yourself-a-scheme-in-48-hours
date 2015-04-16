@@ -32,11 +32,22 @@ data LispVal =
 parseString :: Parser LispVal
 parseString = do
   char '"'
-  x <- many (noneOf "\"" <|> oneOf "\\\"\n\r\t")
+  x <- many $ escapedChars <|> noneOf "\""
   char '"'
   return $ String x
 
---escapeCharacters :: Parser Char
+escapedChars :: Parser Char
+escapedChars = do
+  char '\\'
+  x <- char '"'
+  return x
+
+parseString' :: Parser LispVal
+parseString' = do
+  char '"'
+  x <- many $ ((char '\\' >> oneOf "\\\"") <|> noneOf "\"")
+  char '"'
+  return $ String x
 
 parseAtom :: Parser LispVal
 parseAtom = do
