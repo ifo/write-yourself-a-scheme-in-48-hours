@@ -39,13 +39,13 @@ parseString = do
 escapedChars :: Parser Char
 escapedChars = do
   char '\\'
-  x <- char '"'
+  x <- oneOf "\\\"nrt"
   return x
 
 parseString' :: Parser LispVal
 parseString' = do
   char '"'
-  x <- many $ ((char '\\' >> oneOf "\\\"") <|> noneOf "\"")
+  x <- many $ ((char '\\' >> oneOf "\\\"nrt") <|> noneOf "\"")
   char '"'
   return $ String x
 
